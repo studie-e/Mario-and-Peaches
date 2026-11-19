@@ -1,0 +1,20 @@
+# Python
+__pycache__/
+*.pyc
+*.egg-info/
+.venv/
+.pytest_cache/
+
+# Kết quả huấn luyện: nặng, lưu trên Kaggle Dataset / Drive, không đưa lên git
+runs/
+*.pt
+*.mp4
+
+# Kết quả chấm tạm của scripts/cham_diem.py
+danh-gia-tam/
+
+# Tệp nộp bài
+nhom-*.zip
+
+# Notebook checkpoint
+.ipynb_checkpoints/

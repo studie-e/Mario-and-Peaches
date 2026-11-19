@@ -67,3 +67,18 @@ python -m mario_ppo.evaluate --ckpt runs/1-1/<run>/checkpoints/step_003000000.pt
 3. Thêm khóa tương ứng vào mục `env:` của cấu hình, ví dụ `env.max_no_progress_steps=200`.
 
 Mẹo đặt trong khối này không chạy khi đánh giá, nên không ảnh hưởng đến kết quả chấm.
+
+## Phần thêm của nhóm
+
+| Tệp | Vai trò |
+|---|---|
+| `ke-hoach-mario-ppo.md` | Kế hoạch, phân công, lịch họp |
+| `notebooks/kaggle_train.ipynb` | Notebook huấn luyện trên Kaggle (phiên CPU, resume qua nhiều phiên 12 giờ) |
+| `scripts/chuyen_giao.py` | Tạo checkpoint xuất phát cho học chuyển giao (giữ trọng số, đưa số bước về 0) |
+| `scripts/cham_diem.py` | Chấm checkpoint bằng đúng lệnh Mục 4; `--nop` chép vào `nop-bai/` |
+| `scripts/dong_goi.py` | Kiểm tra và nén `nhom-<số>.zip` |
+| `docs/bang-theo-doi.csv` | Tiêu đề cột của bảng theo dõi chung (nhập vào Google Sheet) |
+| `nop-bai/` | Các tệp sẽ nộp ngoài mã nguồn |
+
+Lưu ý: `train.py` dùng `forkserver`, không có trên Windows. Chạy trên Windows thì đặt `algo.num_envs=1`
+(chỉ để thử), còn huấn luyện thật chạy trên Kaggle (Linux).
