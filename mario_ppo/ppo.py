@@ -36,7 +36,9 @@ def clipped_policy_loss(ratio, advantages, clip):
 
     Mục đích: tăng xác suất hành động có lợi thế dương nhưng không để chính sách mới lệch quá xa chính sách cũ.
     """
-    raise NotImplementedError("TODO: clipped_policy_loss")
+    unclipped = ratio * advantages
+    clipped = torch.clamp(ratio, 1.0 - clip, 1.0 + clip) * advantages
+    return -torch.min(unclipped, clipped).mean()
 
 
 def value_loss(values, returns, old_values=None, clip=None):
@@ -67,7 +69,26 @@ def ppo_loss(new_logp, entropy, values, batch, cfg):
       (unbiased=False). returns không đổi.
     Đầu ra: (loss tensor vô hướng, stats dict các float: policy_loss, value_loss, entropy, approx_kl, clipfrac).
     """
-    raise NotImplementedError("TODO: ppo_loss")
+    log_ratio = new_logp - batch["old_logp"]
+    ratio = log_ratio.exp()
+
+    adv = batch["advantages"]
+    if cfg.norm_adv:  # chỉ chuẩn hóa lợi thế đưa vào actor; returns (mục tiêu của critic) giữ nguyên
+        adv = (adv - adv.mean()) / (adv.std(unbiased=False) + 1e-8)
+
+    pg_loss = clipped_policy_loss(ratio, adv, cfg.clip_coef)
+    if cfg.clip_vloss:
+        v_loss = value_loss(values, batch["returns"], old_values=batch["old_values"], clip=cfg.clip_coef)
+    else:
+        v_loss = value_loss(values, batch["returns"])
+    ent = entropy.mean()
+    loss = pg_loss + cfg.vf_coef * v_loss - cfg.ent_coef * ent
+
+    with torch.no_grad():  # chẩn đoán, không đi qua đồ thị gradient
+        approx_kl, clipfrac = approx_kl_and_clipfrac(log_ratio.detach(), cfg.clip_coef)
+    stats = {"policy_loss": pg_loss.item(), "value_loss": v_loss.item(), "entropy": ent.item(),
+             "approx_kl": float(approx_kl), "clipfrac": float(clipfrac)}
+    return loss, stats
 
 
 def ppo_update(model, optimizer, batch, cfg):
@@ -86,7 +107,38 @@ def ppo_update(model, optimizer, batch, cfg):
       - nếu cfg.target_kl khác None và approx_kl trung bình của epoch vừa xong > target_kl: dừng các epoch còn lại.
     Đầu ra: dict trung bình các stats của ppo_loss trên mọi mini-batch, thêm "minibatch_updates" (số bước gradient).
     """
-    raise NotImplementedError("TODO: ppo_update")
+    B = batch["obs"].shape[0]
+    device = batch["obs"].device
+    sums, n_updates = {}, 0
+
+    for _ in range(cfg.update_epochs):
+        perm = torch.randperm(B, device=device)
+        epoch_kl = []
+        for idx in torch.tensor_split(perm, cfg.num_minibatches):
+            mb = {k: v[idx] for k, v in batch.items()}
+            logits, values = model(mb["obs"])
+            dist = torch.distributions.Categorical(logits=logits)
+            new_logp = dist.log_prob(mb["actions"])
+
+            loss, stats = ppo_loss(new_logp, dist.entropy(), values, mb, cfg)
+
+            optimizer.zero_grad()
+            loss.backward()
+            torch.nn.utils.clip_grad_norm_(model.parameters(), cfg.max_grad_norm)
+            optimizer.step()
+
+            for k, v in stats.items():
+                sums[k] = sums.get(k, 0.0) + v
+            epoch_kl.append(stats["approx_kl"])
+            n_updates += 1
+
+        # dừng sớm: chính sách đã lệch quá xa chính sách cũ sau epoch vừa xong
+        if cfg.target_kl is not None and sum(epoch_kl) / len(epoch_kl) > cfg.target_kl:
+            break
+
+    out = {k: v / n_updates for k, v in sums.items()}
+    out["minibatch_updates"] = n_updates
+    return out
 
 
 def linear_schedule(start, step, total):
