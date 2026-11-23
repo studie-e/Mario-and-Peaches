@@ -28,7 +28,28 @@ def compute_gae(rewards, values, terminated, truncated, final_values, last_value
       - Truy hồi lùi: A_t = delta_t + gamma * lam * (1 - terminated_t) * (1 - truncated_t) * A_{t+1}
         (sau khi kết thúc hoặc bị cắt, bước kế trong bộ đệm thuộc lượt khác).
     """
-    raise NotImplementedError("TODO: compute_gae")
+    T = rewards.shape[0]
+    terminated = terminated.float()
+    truncated = truncated.float()
+    advantages = torch.zeros_like(rewards)
+    last_adv = torch.zeros_like(last_value)
+
+    for t in reversed(range(T)):
+        not_term = 1.0 - terminated[t]
+        not_trunc = 1.0 - truncated[t]
+        # Giá trị kế tiếp nếu lượt không bị cắt: values_{t+1}, hoặc last_value ở biên đoạn thu.
+        v_succ = last_value if t == T - 1 else values[t + 1]
+        v_next = truncated[t] * final_values[t] + not_trunc * v_succ
+        delta = rewards[t] + gamma * not_term * v_next - values[t]
+        if t == T - 1:
+            # Biên đoạn thu luôn cắt truy hồi: không có A_T.
+            last_adv = delta
+        else:
+            last_adv = delta + gamma * lam * not_term * not_trunc * last_adv
+        advantages[t] = last_adv
+
+    returns = advantages + values
+    return advantages, returns
 
 
 def clipped_policy_loss(ratio, advantages, clip):
@@ -45,7 +66,12 @@ def value_loss(values, returns, old_values=None, clip=None):
     Biến thể cắt (khi old_values và clip khác None): v_clip = old_values + clamp(values - old_values, -clip, clip),
     mất mát = mean(max((values - returns)^2, (v_clip - returns)^2)).
     """
-    raise NotImplementedError("TODO: value_loss")
+    loss_unclipped = (values - returns) ** 2
+    if old_values is None or clip is None:
+        return loss_unclipped.mean()
+    v_clip = old_values + torch.clamp(values - old_values, -clip, clip)
+    loss_clipped = (v_clip - returns) ** 2
+    return torch.max(loss_unclipped, loss_clipped).mean()
 
 
 def approx_kl_and_clipfrac(log_ratio, clip):
@@ -54,7 +80,11 @@ def approx_kl_and_clipfrac(log_ratio, clip):
       clipfrac  = tỉ lệ mẫu có |ratio - 1| > clip
     Mục đích: theo dõi chính sách thay đổi bao nhiêu sau mỗi lần cập nhật (approx_kl quá lớn = bước quá dài).
     """
-    raise NotImplementedError("TODO: approx_kl_and_clipfrac")
+    with torch.no_grad():
+        ratio = torch.exp(log_ratio)
+        approx_kl = ((ratio - 1) - log_ratio).mean().item()
+        clipfrac = ((ratio - 1).abs() > clip).float().mean().item()
+    return approx_kl, clipfrac
 
 
 def ppo_loss(new_logp, entropy, values, batch, cfg):
