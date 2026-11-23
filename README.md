@@ -77,8 +77,19 @@ Mẹo đặt trong khối này không chạy khi đánh giá, nên không ảnh 
 | `scripts/chuyen_giao.py` | Tạo checkpoint xuất phát cho học chuyển giao (giữ trọng số, đưa số bước về 0) |
 | `scripts/cham_diem.py` | Chấm checkpoint bằng đúng lệnh Mục 4; `--nop` chép vào `nop-bai/` |
 | `scripts/dong_goi.py` | Kiểm tra và nén `nhom-<số>.zip` |
+| `scripts/ve_do_thi.py` | Vẽ chồng đường cong học từ nhiều lần chạy (`progress.csv`, `evals.csv`) |
 | `docs/bang-theo-doi.csv` | Tiêu đề cột của bảng theo dõi chung (nhập vào Google Sheet) |
 | `nop-bai/` | Các tệp sẽ nộp ngoài mã nguồn |
 
 Lưu ý: `train.py` dùng `forkserver`, không có trên Windows. Chạy trên Windows thì đặt `algo.num_envs=1`
 (chỉ để thử), còn huấn luyện thật chạy trên Kaggle (Linux).
+
+Để vẽ đồ thị so sánh, cài thêm `pip install -e ".[plot]"`, rồi chạy ví dụ:
+
+```bash
+python scripts/ve_do_thi.py runs/1-1/hien runs/1-1/linh --label "gamma=.9 seed=1" --label "gamma=.9 seed=2" --output figures/so-sanh.png
+```
+
+Đường `flag_rate` trong `progress.csv` là tỷ lệ của 100 lượt huấn luyện gần nhất;
+đường từ `evals.csv` là 5 lượt mỗi checkpoint. Xem `docs/thi-nghiem-gamma.md`
+để biết thiết kế và cách kết luận thí nghiệm của Linh.
