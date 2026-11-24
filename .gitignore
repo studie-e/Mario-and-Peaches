@@ -18,3 +18,6 @@ nhom-*.zip
 
 # Notebook checkpoint
 .ipynb_checkpoints/
+
+# Claude local settings
+.claude/

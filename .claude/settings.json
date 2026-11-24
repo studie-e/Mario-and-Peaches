@@ -1,7 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "PowerShell(New-Item -ItemType Directory -Force notebooks | Out-Null; python \"C:\\\\Users\\\\OS\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\d--hien-Dai-hoc-Nam-3-RL-Mario-and-Peaches\\\\c766bbed-523d-4ab8-bccf-032e4eb4a819\\\\scratchpad\\\\make_nb.py\" notebooks/kaggle_train.ipynb; python -c \"import json; nb=json.load\\(open\\('notebooks/kaggle_train.ipynb',encoding='utf-8'\\)\\); print\\(len\\(nb['cells']\\),'cells'\\)\"; foreach \\($f in 'scripts/chuyen_giao.py','scripts/cham_diem.py','scripts/dong_goi.py'\\) { python -m py_compile $f; if \\($?\\) { \"$f ok\" } }; python scripts/dong_goi.py 0 --kiem-tra)"
-    ]
-  }
-}
