@@ -1,0 +1,8 @@
+﻿{
+    "transfer_validation":  "Identical model tensors to Cuc source; global_step=0; empty optimizer state",
+    "python":  "3.12.16",
+    "environment":  "Ubuntu WSL; OMP_NUM_THREADS=2; MKL_NUM_THREADS=2; PYTHONPATH=.",
+    "pytest":  "36 passed in 27.85s",
+    "protocol":  "Unmodified mario_ppo.evaluate, level=1-1, episodes=20, seed=2026, max_steps=3000",
+    "code_commit":  "5b858958694cae1630090282fff508bbefb44c8d"
+}

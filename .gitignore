@@ -6,8 +6,9 @@ __pycache__/
 .pytest_cache/
 
 # Kết quả huấn luyện: nặng, lưu trên Kaggle Dataset / Drive, không đưa lên git
-runs/
-*.pt
+runs/videos/*
+
+
 *.mp4
 
 # Kết quả chấm tạm của scripts/cham_diem.py

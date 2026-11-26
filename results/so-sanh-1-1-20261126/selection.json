@@ -1,0 +1,21 @@
+{
+  "code_commit": "5b858958694cae1630090282fff508bbefb44c8d",
+  "criterion": [
+    "flag_rate",
+    "mean_x_pos"
+  ],
+  "ranking": [
+    "cuc",
+    "chi",
+    "linh",
+    "hien"
+  ],
+  "tied_best": [
+    "cuc",
+    "chi"
+  ],
+  "selected": "cuc",
+  "source_checkpoint": "runs/cuc/step_003002368.pt",
+  "source_sha256": "090bac5d7b14ebc063f974408d4ee739ab7d65f76be3b9e76813a65385f1e8dd",
+  "caveat": "Selection on level 1-1 only; does not establish best transfer performance. Exact ties retain input order hien, linh, cuc, chi."
+}
