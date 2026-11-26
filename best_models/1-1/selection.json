@@ -1,0 +1,40 @@
+{
+  "protocol": {
+    "level": "1-1",
+    "episodes": 100,
+    "seed": 2026,
+    "max_steps": 3000,
+    "OMP_NUM_THREADS": 2,
+    "MKL_NUM_THREADS": 2
+  },
+  "ranking": [
+    {
+      "person": "cuc",
+      "wins": 100,
+      "flag_rate": 1.0,
+      "mean_x_pos": 3161.0,
+      "mean_steps": 288.19,
+      "checkpoint": "runs/cuc/step_003002368.pt",
+      "sha256": "090bac5d7b14ebc063f974408d4ee739ab7d65f76be3b9e76813a65385f1e8dd"
+    },
+    {
+      "person": "chi",
+      "wins": 98,
+      "flag_rate": 0.98,
+      "mean_x_pos": 3145.39,
+      "mean_steps": 276.48,
+      "checkpoint": "runs/chi/checkpoint_3m.pt",
+      "sha256": "1c5c33dfdbfeeded14b0de48875d296b918d0bde144b907760eab6a0c08f9d75"
+    }
+  ],
+  "selected": "cuc",
+  "tied_best": [
+    "cuc"
+  ],
+  "criterion": [
+    "flag_rate",
+    "mean_x_pos"
+  ],
+  "tie_policy": "Keep Cuc if both criteria tie; no claim of superiority in that case.",
+  "caveat": "Supplementary 100-episode comparison; official 20-episode evaluations remain separate. Best on this evaluation is not proof of best transfer to other levels."
+}

@@ -1,0 +1,14 @@
+﻿{
+    "evaluation_20_wins":  20,
+    "seed":  1,
+    "evaluation_100_wins":  100,
+    "original_checkpoint":  "checkpoint_3m.pt",
+    "transfer_usage":  "resume=best_models/1-1/xuat-phat-1-1.pt",
+    "transfer_state":  "Same model weights; global_step=0; fresh optimizer",
+    "level":  "1-1",
+    "owner":  "Cuc",
+    "gamma":  0.99,
+    "evaluation_seed":  2026,
+    "transfer_checkpoint":  "xuat-phat-1-1.pt",
+    "training_steps":  3002368
+}
