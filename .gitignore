@@ -7,8 +7,7 @@ __pycache__/
 
 # Kết quả huấn luyện: nặng, lưu trên Kaggle Dataset / Drive, không đưa lên git
 runs/videos/*
-*.yaml
-*.csv
+
 
 *.mp4
 
