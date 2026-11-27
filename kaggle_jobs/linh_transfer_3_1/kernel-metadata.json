@@ -1,0 +1,10 @@
+{
+  "id": "dieulinhvuhoang/mario-ppo-linh-transfer-3-1-1m-20261127",
+  "title": "Mario PPO Linh transfer 3-1 1M 20261127",
+  "code_file": "train_transfer.py",
+  "language": "python",
+  "kernel_type": "script",
+  "is_private": "true",
+  "enable_gpu": "false",
+  "enable_internet": "true"
+}
